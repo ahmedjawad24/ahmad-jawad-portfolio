@@ -20,6 +20,13 @@ Import this repository into Vercel. The default Next.js settings are sufficient:
 - Output directory: default
 - Node.js: 20 or newer
 
+### Optional AI concierge
+
+The assistant works with a safe offline handoff by default. To enable intelligent
+GPT-style replies, add `OPENAI_API_KEY` and optionally `OPENAI_MODEL` in the
+Vercel project environment variables. Never commit the real key; use `.env.example`
+as the template.
+
 ## Featured work
 
 - [Proof of Trust](https://github.com/ahmedjawad24/proof-of-trust)
