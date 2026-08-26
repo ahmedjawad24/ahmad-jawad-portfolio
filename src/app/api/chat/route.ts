@@ -44,6 +44,7 @@ function getSafeMessages(value: unknown) {
 
 function localReply(question: string) {
   const text = question.toLowerCase();
+  if ((text.includes("which") || text.includes("recommend") || text.includes("first")) && text.includes("project")) return "Start with Proof of Trust. It is Ahmad's clearest end-to-end example of product thinking around AI: accountability, human audits, model reputation, and immutable verification using Next.js, Solana, Rust, and AI evaluation.";
   if (text.includes("proof") || text.includes("trust")) return "Start with Proof of Trust. It explores AI accountability through human audits, model reputation, and immutable verification using Next.js, Solana, Rust, and AI evaluation.";
   if (text.includes("fraud") || text.includes("risk")) return "FraudLens is the best match. It combines Python, scikit-learn, Streamlit, imbalance-aware detection, review queues, and validation-selected thresholds. Its reported PR-AUC is 0.874.";
   if (text.includes("retina") || text.includes("medical") || text.includes("health")) return "Explore Explainable Retinal AI. It uses PyTorch, EfficientNet, FastAPI, and Grad-CAM to support clinical review with a human-in-the-loop workflow.";
