@@ -68,7 +68,7 @@ function localStream(reply: string) {
 
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return localStream("The free local guide is active. " + localReply("explore Ahmad's work"));
+  if (!apiKey) return localStream(localReply("explore Ahmad's work"));
   if (isRateLimited(getClientKey(request))) return NextResponse.json({ reply: "You have reached the assistant's hourly limit. Please try again later or email Ahmad directly." }, { status: 429 });
   let latestQuestion = "explore Ahmad's work";
   try {
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     });
     if (!response.ok) {
       if (response.status === 401) return NextResponse.json({ reply: "The assistant key was rejected. Create a new OpenAI key and update your local environment." }, { status: 502 });
-      if (response.status === 429) return localStream("OpenAI free quota is unavailable, so I switched to the free local guide. " + localReply(messages[messages.length - 1].content));
+      if (response.status === 429) return localStream(localReply(messages[messages.length - 1].content));
       if (response.status === 404) return NextResponse.json({ reply: "The configured AI model is unavailable for this key. Set OPENAI_MODEL to a model enabled for your OpenAI project." }, { status: 503 });
       return NextResponse.json({ reply: "OpenAI is temporarily unavailable. Please try again shortly." }, { status: 503 });
     }
@@ -93,6 +93,6 @@ export async function POST(request: Request) {
     return new Response(response.body, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache", Connection: "keep-alive" } });
   } catch (error) {
     console.error("Portfolio assistant request failed", error);
-    return localStream("The free local guide is active while the AI service is unavailable. " + localReply(latestQuestion));
+    return localStream(localReply(latestQuestion));
   }
 }
