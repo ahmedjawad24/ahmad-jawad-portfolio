@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
+const WINDOW_MS = 60 * 60 * 1000;
+const MAX_REQUESTS_PER_WINDOW = 20;
+const requestLog = new Map<string, { count: number; resetAt: number }>();
+
 const portfolioContext = `You are AJ, Ahmad Jawad's live portfolio guide. Help a recruiter, client, or engineer quickly understand Ahmad's work. Be warm, direct, and specific. Keep replies under 120 words unless the visitor asks for detail.
 
 PROFILE: Ahmad is an Applied AI & MLOps Engineer and BS Computer Science graduate from Pak Austria Fachhochschule: Institute of Applied Sciences & Technology. He is open to global opportunities. His focus is turning complex AI into clear, reliable products: GenAI, agentic workflows, evaluation, explainability, MLOps, and production-minded software.
@@ -10,16 +16,46 @@ CONTACT: ahmed.jawadcs@gmail.com, github.com/ahmedjawad24, linkedin.com/in/ahmad
 
 RULES: Never invent employers, dates, metrics, degrees, clients, or personal details. If information is missing, say it is not verified and offer Ahmad's email. When asked what to explore, recommend one relevant project and explain why.`;
 
+function getClientKey(request: Request) {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+}
+
+function isRateLimited(key: string) {
+  const now = Date.now();
+  const current = requestLog.get(key);
+  if (!current || current.resetAt <= now) {
+    requestLog.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+  current.count += 1;
+  return current.count > MAX_REQUESTS_PER_WINDOW;
+}
+
+function getSafeMessages(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(-10).flatMap((message) => {
+    if (!message || typeof message !== "object") return [];
+    const candidate = message as { from?: unknown; text?: unknown };
+    if ((candidate.from !== "visitor" && candidate.from !== "assistant") || typeof candidate.text !== "string") return [];
+    const text = candidate.text.trim().slice(0, 2000);
+    return text ? [{ role: candidate.from === "visitor" ? "user" : "assistant", content: text }] : [];
+  });
+}
+
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return NextResponse.json({ reply: "The live assistant is offline right now. Ahmad can answer directly at ahmad.jawadcs@gmail.com." }, { status: 503 });
+  if (isRateLimited(getClientKey(request))) return NextResponse.json({ reply: "You have reached the assistant's hourly limit. Please try again later or email Ahmad directly." }, { status: 429 });
   try {
+    const contentLength = Number(request.headers.get("content-length") || 0);
+    if (contentLength > 30_000) return NextResponse.json({ reply: "That message is too long. Please keep questions under 2,000 characters." }, { status: 413 });
     const body = await request.json();
-    const messages = Array.isArray(body.messages) ? body.messages.slice(-10) : [];
+    const messages = getSafeMessages(body.messages);
+    if (!messages.length || messages[messages.length - 1].role !== "user") return NextResponse.json({ reply: "Please send a question about Ahmad's work, skills, or availability." }, { status: 400 });
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-4o-mini", temperature: 0.35, max_tokens: 260, stream: true, messages: [{ role: "system", content: portfolioContext }, ...messages.map((message: { from: string; text: string }) => ({ role: message.from === "visitor" ? "user" : "assistant", content: message.text }))] }),
+      body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-4o-mini", temperature: 0.35, max_tokens: 260, stream: true, messages: [{ role: "system", content: portfolioContext }, ...messages] }),
     });
     if (!response.ok || !response.body) throw new Error("Chat provider returned an invalid stream");
     return new Response(response.body, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache", Connection: "keep-alive" } });
