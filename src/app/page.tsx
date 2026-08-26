@@ -27,21 +27,45 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([{ from: "assistant", text: "Hi, I’m Ahmad’s portfolio assistant. Ask about his work, stack, background, or availability." }]);
   const [isThinking, setIsThinking] = useState(false);
+  const quickPrompts = ["Which project should I explore first?", "What can Ahmad build for a team?", "Tell me about Proof of Trust"];
   const visible = filter === "All" ? projects : projects.filter((project) => project.type === filter);
-  const ask = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!question.trim() || isThinking) return;
-    const text = question.trim();
+  const ask = async (event: FormEvent | null, prompt = question) => {
+    event?.preventDefault();
+    if (!prompt.trim() || isThinking) return;
+    const text = prompt.trim();
     const nextMessages = [...messages, { from: "visitor" as const, text }];
-    setMessages(nextMessages);
+    setMessages([...nextMessages, { from: "assistant", text: "" }]);
     setQuestion("");
     setIsThinking(true);
     try {
       const response = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages }) });
-      const data = await response.json();
-      setMessages((current) => [...current, { from: "assistant", text: data.reply || fallback }]);
+      if (!response.ok || !response.body) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.reply || fallback);
+      }
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let answer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const events = buffer.split("\n\n");
+        buffer = events.pop() || "";
+        for (const eventChunk of events) {
+          const dataLine = eventChunk.split("\n").find((line) => line.startsWith("data: "));
+          if (!dataLine) continue;
+          const payload = dataLine.slice(6).trim();
+          if (payload === "[DONE]") continue;
+          const token = JSON.parse(payload).choices?.[0]?.delta?.content || "";
+          answer += token;
+          setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: answer }]);
+        }
+      }
+      if (!answer) setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: fallback }]);
     } catch {
-      setMessages((current) => [...current, { from: "assistant", text: fallback }]);
+      setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: fallback }]);
     } finally { setIsThinking(false); }
   };
   return <main>
@@ -56,6 +80,6 @@ export default function Home() {
     </div><section className="contact" id="contact"><div className="shell"><div className="kicker">05 / Start a conversation</div><h2>Have a hard problem?<br />Let&apos;s make it legible.</h2><div className="contact-grid"><a className="contact-item" href="mailto:ahmed.jawadcs@gmail.com"><span>Email</span><strong>ahmed.jawadcs@gmail.com</strong><ArrowUpRight size={17} /></a><a className="contact-item" href="tel:+923482991158"><span>Phone</span><strong>+92 348 2991158</strong><ArrowUpRight size={17} /></a><a className="contact-item" href="https://github.com/ahmedjawad24" target="_blank" rel="noreferrer"><span>Code</span><strong>github.com/ahmedjawad24</strong><ArrowUpRight size={17} /></a><a className="contact-item" href="https://www.linkedin.com/in/ahmad-jawad-248870267" target="_blank" rel="noreferrer"><span>Network</span><strong>LinkedIn profile</strong><ArrowUpRight size={17} /></a></div></div></section><div className="shell"><footer className="footer"><span>© 2026 Ahmad Jawad</span><span><Radio size={12} /> Built for the web · Deployed on Vercel</span></footer></div>
     <button className="chat-launcher" onClick={() => setChatOpen((open) => !open)} aria-label={chatOpen ? "Close portfolio assistant" : "Open portfolio assistant"}>{chatOpen ? <X size={21} /> : <Bot size={21} />}<span>Ask about Ahmad</span></button>
     {selectedProject && <div className="modal-backdrop" onClick={() => setSelectedProject(null)}><article className="project-modal" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setSelectedProject(null)} aria-label="Close project brief"><X size={18} /></button><span className="kicker">Project signal / {selectedProject.type}</span><h2>{selectedProject.title}</h2><p>{selectedProject.description}</p><div className="modal-signal"><span>Focus</span><strong>{selectedProject.signal}</strong></div><div className="project-tags">{selectedProject.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div><div className="modal-actions"><a className="button primary" href={selectedProject.href} target="_blank" rel="noreferrer">View repository <ArrowUpRight size={15} /></a><button className="button" onClick={() => { setSelectedProject(null); setChatOpen(true); }}>Ask about this <Bot size={15} /></button></div></article></div>}
-    {chatOpen && <aside className="chat-panel" aria-label="Portfolio assistant"><div className="chat-header"><div><strong>AJ assistant</strong><span><span className="pulse">●</span> AI concierge · human handoff ready</span></div><button onClick={() => setChatOpen(false)} aria-label="Close assistant"><X size={17} /></button></div><div className="chat-messages">{messages.map((message, index) => <div className={`chat-message ${message.from}`} key={`${message.from}-${index}`}>{message.text}</div>)}{isThinking && <div className="chat-message assistant typing">Thinking<span>.</span><span>.</span><span>.</span></div>}</div><form className="chat-form" onSubmit={ask}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ask anything about Ahmad..." aria-label="Ask the assistant" /><button type="submit" aria-label="Send question" disabled={isThinking}><Send size={17} /></button></form><a className="chat-handoff" href="mailto:ahmed.jawadcs@gmail.com">Need a direct answer? Email Ahmad <ArrowUpRight size={13} /></a></aside>}
+    {chatOpen && <aside className="chat-panel" aria-label="Portfolio assistant"><div className="chat-header"><div><strong>AJ assistant</strong><span><span className="pulse">●</span> Live portfolio guide · streams in real time</span></div><button onClick={() => setChatOpen(false)} aria-label="Close assistant"><X size={17} /></button></div><div className="chat-messages">{messages.map((message, index) => <div className={`chat-message ${message.from}`} key={`${message.from}-${index}`}>{message.text}</div>)}{messages.length === 1 && <div className="quick-prompts">{quickPrompts.map((prompt) => <button key={prompt} onClick={() => ask(null, prompt)} disabled={isThinking}>{prompt}<ArrowUpRight size={13} /></button>)}</div>}{isThinking && <div className="chat-message assistant typing">Thinking<span>.</span><span>.</span><span>.</span></div>}</div><form className="chat-form" onSubmit={ask}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ask about projects, skills, or fit..." aria-label="Ask the assistant" /><button type="submit" aria-label="Send question" disabled={isThinking}><Send size={17} /></button></form><a className="chat-handoff" href="mailto:ahmed.jawadcs@gmail.com">Need a direct answer? Email Ahmad <ArrowUpRight size={13} /></a></aside>}
   </main>;
 }

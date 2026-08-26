@@ -118,6 +118,9 @@ button { font: inherit; }
 .chat-message { max-width: 88%; padding: 10px 12px; line-height: 1.45; font-size: 12px; }
 .chat-message.assistant { align-self: start; background: #e1e4dc; }
 .chat-message.visitor { align-self: end; background: var(--acid); }
+.quick-prompts { display: grid; gap: 7px; margin-top: 2px; }
+.quick-prompts button { display: flex; justify-content: space-between; align-items: center; padding: 9px 10px; border: 1px solid var(--line); background: rgba(255, 255, 255, .7); color: var(--ink); cursor: pointer; text-align: left; font: 10px 'DM Mono'; }
+.quick-prompts button:hover { border-color: var(--coral); color: var(--coral); }
 .chat-form { display: flex; border-top: 1px solid var(--line); padding: 10px; gap: 8px; }
 .chat-form input { min-width: 0; flex: 1; padding: 10px; border: 1px solid var(--line); background: white; outline: 0; font-size: 12px; }
 .chat-form input:focus { border-color: var(--ink); }
