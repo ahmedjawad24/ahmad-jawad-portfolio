@@ -42,16 +42,41 @@ function getSafeMessages(value: unknown) {
   });
 }
 
+function localReply(question: string) {
+  const text = question.toLowerCase();
+  if (text.includes("proof") || text.includes("trust")) return "Start with Proof of Trust. It explores AI accountability through human audits, model reputation, and immutable verification using Next.js, Solana, Rust, and AI evaluation.";
+  if (text.includes("fraud") || text.includes("risk")) return "FraudLens is the best match. It combines Python, scikit-learn, Streamlit, imbalance-aware detection, review queues, and validation-selected thresholds. Its reported PR-AUC is 0.874.";
+  if (text.includes("retina") || text.includes("medical") || text.includes("health")) return "Explore Explainable Retinal AI. It uses PyTorch, EfficientNet, FastAPI, and Grad-CAM to support clinical review with a human-in-the-loop workflow.";
+  if (text.includes("skill") || text.includes("stack") || text.includes("technology")) return "Ahmad works across GenAI, agentic workflows, MLOps, evaluation, explainability, and production-minded software. His stack includes Python, TypeScript, Next.js, PyTorch, scikit-learn, FastAPI, Streamlit, Rust, and Solana.";
+  if (text.includes("hire") || text.includes("job") || text.includes("available") || text.includes("team") || text.includes("build")) return "Ahmad is open to global opportunities. He can help teams turn an AI idea into an evaluated, observable product through model selection, agent design, APIs, dashboards, deployment, and human review.";
+  if (text.includes("about") || text.includes("who") || text.includes("background")) return "Ahmad Jawad is an Applied AI & MLOps Engineer and BS Computer Science graduate from Pak Austria Fachhochschule. He focuses on making AI systems clear, useful, and reliable in real workflows.";
+  return "I can help you explore Ahmad's projects, skills, background, or availability. Try asking about Proof of Trust, FraudLens, explainable medical AI, his technology stack, or what he can build for a team.";
+}
+
+function localStream(reply: string) {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { content: reply } }] })}\n\n`));
+      controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+      controller.close();
+    },
+  });
+  return new Response(stream, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache", "X-Assistant-Mode": "local" } });
+}
+
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return NextResponse.json({ reply: "The live assistant is offline right now. Ahmad can answer directly at ahmad.jawadcs@gmail.com." }, { status: 503 });
+  if (!apiKey) return localStream("The free local guide is active. " + localReply("explore Ahmad's work"));
   if (isRateLimited(getClientKey(request))) return NextResponse.json({ reply: "You have reached the assistant's hourly limit. Please try again later or email Ahmad directly." }, { status: 429 });
+  let latestQuestion = "explore Ahmad's work";
   try {
     const contentLength = Number(request.headers.get("content-length") || 0);
     if (contentLength > 30_000) return NextResponse.json({ reply: "That message is too long. Please keep questions under 2,000 characters." }, { status: 413 });
     const body = await request.json();
     const messages = getSafeMessages(body.messages);
     if (!messages.length || messages[messages.length - 1].role !== "user") return NextResponse.json({ reply: "Please send a question about Ahmad's work, skills, or availability." }, { status: 400 });
+    latestQuestion = messages[messages.length - 1].content;
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
@@ -59,7 +84,7 @@ export async function POST(request: Request) {
     });
     if (!response.ok) {
       if (response.status === 401) return NextResponse.json({ reply: "The assistant key was rejected. Create a new OpenAI key and update your local environment." }, { status: 502 });
-      if (response.status === 429) return NextResponse.json({ reply: "The assistant is connected, but this OpenAI account has reached its usage limit. Check billing, credits, or project limits in OpenAI, then restart the app." }, { status: 503 });
+      if (response.status === 429) return localStream("OpenAI free quota is unavailable, so I switched to the free local guide. " + localReply(messages[messages.length - 1].content));
       if (response.status === 404) return NextResponse.json({ reply: "The configured AI model is unavailable for this key. Set OPENAI_MODEL to a model enabled for your OpenAI project." }, { status: 503 });
       return NextResponse.json({ reply: "OpenAI is temporarily unavailable. Please try again shortly." }, { status: 503 });
     }
@@ -67,6 +92,6 @@ export async function POST(request: Request) {
     return new Response(response.body, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache", Connection: "keep-alive" } });
   } catch (error) {
     console.error("Portfolio assistant request failed", error);
-    return NextResponse.json({ reply: "I’m unable to reach the live assistant right now. Ahmad can answer directly at ahmad.jawadcs@gmail.com." }, { status: 503 });
+    return localStream("The free local guide is active while the AI service is unavailable. " + localReply(latestQuestion));
   }
 }
