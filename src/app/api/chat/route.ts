@@ -57,9 +57,16 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-4o-mini", temperature: 0.35, max_tokens: 260, stream: true, messages: [{ role: "system", content: portfolioContext }, ...messages] }),
     });
-    if (!response.ok || !response.body) throw new Error("Chat provider returned an invalid stream");
+    if (!response.ok) {
+      if (response.status === 401) return NextResponse.json({ reply: "The assistant key was rejected. Create a new OpenAI key and update your local environment." }, { status: 502 });
+      if (response.status === 429) return NextResponse.json({ reply: "The assistant is connected, but this OpenAI account has reached its usage limit. Check billing, credits, or project limits in OpenAI, then restart the app." }, { status: 503 });
+      if (response.status === 404) return NextResponse.json({ reply: "The configured AI model is unavailable for this key. Set OPENAI_MODEL to a model enabled for your OpenAI project." }, { status: 503 });
+      return NextResponse.json({ reply: "OpenAI is temporarily unavailable. Please try again shortly." }, { status: 503 });
+    }
+    if (!response.body) throw new Error("Chat provider returned an invalid stream");
     return new Response(response.body, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache", Connection: "keep-alive" } });
-  } catch {
+  } catch (error) {
+    console.error("Portfolio assistant request failed", error);
     return NextResponse.json({ reply: "I’m unable to reach the live assistant right now. Ahmad can answer directly at ahmad.jawadcs@gmail.com." }, { status: 503 });
   }
 }
