@@ -27,6 +27,26 @@ GPT-style replies, add `OPENAI_API_KEY` and optionally `OPENAI_MODEL` in the
 Vercel project environment variables. Never commit the real key; use `.env.example`
 as the template.
 
+For local development, create `.env.local` in the project root and add:
+
+```env
+OPENAI_API_KEY=your-new-key
+OPENAI_MODEL=gpt-4o-mini
+```
+
+Restart the dev server after changing environment variables. If PowerShell blocks
+`npm`, use `npm.cmd` or start Next.js directly with the Node.js executable.
+
+### Deploy to Vercel
+
+1. Revoke any API key shared in chat, email, or source control, then create a new key.
+2. Sign in to Vercel with GitHub and choose **Add New > Project**.
+3. Import `ahmad-jawad-portfolio` from GitHub and keep the detected Next.js settings.
+4. Add `OPENAI_API_KEY` and `OPENAI_MODEL` under Environment Variables for Production, Preview, and Development.
+5. Click **Deploy**. Future pushes to `master` deploy automatically.
+
+Never put the key in `page.tsx`, `NEXT_PUBLIC_*`, or any committed file.
+
 ## Featured work
 
 - [Proof of Trust](https://github.com/ahmedjawad24/proof-of-trust)
@@ -38,3 +58,5 @@ as the template.
 ## Positioning
 
 **Applied AI & MLOps Engineer** building AI that can be evaluated, deployed, operated, and trusted.
+
+Contact: `ahmed.jawadcs@gmail.com` · `+92 348 2991158`

@@ -64,8 +64,9 @@ export default function Home() {
         }
       }
       if (!answer) setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: fallback }]);
-    } catch {
-      setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: fallback }]);
+    } catch (error) {
+      const errorMessage = error instanceof Error && error.message ? error.message : fallback;
+      setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: errorMessage }]);
     } finally { setIsThinking(false); }
   };
   return <main>
