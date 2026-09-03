@@ -79,10 +79,10 @@ export default function ContactSection() {
                 <span className="opacity-50">/</span>
                 <span>Get in Touch</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white">
-                Let&apos;s build something great together.
+              <h2 className="section-header-title text-2xl sm:text-4xl font-bold tracking-tight text-white">
+                Let&apos;s Build Something Great Together.
               </h2>
-              <p className="text-slate-300 text-sm sm:text-base mt-2 leading-relaxed">
+              <p className="section-header-desc text-slate-300 text-sm sm:text-base mt-2 leading-relaxed">
                 Whether you have an engineering role opening, a project to build, or just want to connect, feel free to reach out anytime.
               </p>
             </div>
@@ -190,7 +190,7 @@ export default function ContactSection() {
                 <div className="flex items-center gap-2">
                   <MessageSquare size={16} className="theme-text-accent" />
                   <h3 className="text-base font-bold text-white">
-                    Send a quick message
+                    Send a Quick Message
                   </h3>
                 </div>
                 <span className="text-xs text-slate-400">Opens your email app</span>

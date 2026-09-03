@@ -160,39 +160,39 @@ export default function Hero({ onOpenAssistant, onOpenResume }: HeroProps) {
           <div className="lg:col-span-7 space-y-6">
             
             {/* Status Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium theme-badge-primary shadow-sm backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium theme-badge-primary shadow-sm backdrop-blur-sm hero-pill-canvas">
               <span className="w-2 h-2 rounded-full bg-current status-dot" />
               <span className="font-semibold text-white">Ahmad Jawad</span>
               <span className="opacity-50">·</span>
               <span className="text-slate-200">Applied AI & Machine Learning Engineer</span>
             </div>
 
-            {/* Headline - High visual appeal with theme accent */}
-            <h1 className="text-3xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-white leading-[1.2]">
+            {/* Headline - Title Case & high visual appeal with theme accent */}
+            <h1 className="hero-title text-3xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-white leading-[1.2]">
               Building{" "}
               <span className="theme-text-accent underline decoration-2 decoration-current underline-offset-4">
-                smart, practical AI
+                Smart, Practical AI
               </span>{" "}
-              that solves real-world problems.
+              that Solves Real-World Problems.
             </h1>
 
             {/* Subheading */}
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
+            <p className="hero-subtitle text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
               I design and build machine learning systems, helpful AI assistants, and computer vision tools—focusing on clean user experience, speed, and real-world usefulness.
             </p>
 
             {/* Everyday Domain Highlights */}
             <div className="flex flex-wrap gap-2 pt-1 text-xs">
-              <span className="px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
+              <span className="hero-domain-tag px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
                 <Cpu size={14} className="theme-text-accent" /> Computer Vision & Image AI
               </span>
-              <span className="px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
+              <span className="hero-domain-tag px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
                 <ShieldCheck size={14} className="theme-text-secondary-accent" /> Clear & Explainable AI
               </span>
-              <span className="px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
+              <span className="hero-domain-tag px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
                 <Layers size={14} className="theme-text-accent" /> Fraud & Anomaly Detection
               </span>
-              <span className="px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
+              <span className="hero-domain-tag px-3 py-1.5 rounded-xl theme-surface backdrop-blur-sm border text-slate-200 font-medium flex items-center gap-1.5">
                 <Bot size={14} className="theme-text-secondary-accent" /> Smart Chatbots & Assistants
               </span>
             </div>
@@ -223,7 +223,7 @@ export default function Hero({ onOpenAssistant, onOpenResume }: HeroProps) {
                 {copied ? (
                   <>
                     <Check size={15} className="theme-text-accent" />
-                    <span className="theme-text-accent font-sans font-medium">Copied to clipboard!</span>
+                    <span className="theme-text-accent font-sans font-medium">Copied To Clipboard!</span>
                   </>
                 ) : (
                   <>
@@ -237,16 +237,16 @@ export default function Hero({ onOpenAssistant, onOpenResume }: HeroProps) {
             {/* Stats */}
             <div className="pt-6 border-t border-slate-800/90 grid grid-cols-3 gap-4 max-w-lg">
               <div>
-                <div className="text-2xl font-bold text-white">9+</div>
-                <div className="text-xs text-slate-400 mt-0.5">Finished AI Projects</div>
+                <div className="stat-val-canvas text-2xl font-bold text-white">9+</div>
+                <div className="stat-lbl-canvas text-xs text-slate-400 mt-0.5">Finished AI Projects</div>
               </div>
               <div>
                 <div className="text-2xl font-bold theme-text-accent">96%</div>
-                <div className="text-xs text-slate-400 mt-0.5">Medical AI Accuracy</div>
+                <div className="stat-lbl-canvas text-xs text-slate-400 mt-0.5">Medical AI Accuracy</div>
               </div>
               <div>
                 <div className="text-2xl font-bold theme-text-secondary-accent">34%</div>
-                <div className="text-xs text-slate-400 mt-0.5">Fewer False Alarms</div>
+                <div className="stat-lbl-canvas text-xs text-slate-400 mt-0.5">Fewer False Alarms</div>
               </div>
             </div>
 

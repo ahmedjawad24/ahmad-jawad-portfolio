@@ -42,7 +42,7 @@ export default function Navbar({ onOpenAssistant, onOpenResume }: NavbarProps) {
   const navLinks = [
     { label: "Projects", href: "#projects" },
     { label: "Skills", href: "#skills" },
-    { label: "How I Work", href: "#philosophy" },
+    { label: "Values & Vision", href: "#philosophy" },
     { label: "About Me", href: "#about" },
     { label: "Contact", href: "#contact" },
   ];

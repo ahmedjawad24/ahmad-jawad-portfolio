@@ -81,10 +81,10 @@ export default function AboutSection({ onOpenResume, onOpenAssistant }: AboutSec
             <span className="opacity-50">/</span>
             <span>About Me</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white">
-            Engineering intelligent software with purpose & precision.
+          <h2 className="section-header-title text-2xl sm:text-4xl font-bold tracking-tight text-white">
+            Engineering Intelligent Software with Purpose & Precision.
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mt-2 leading-relaxed">
+          <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-2 leading-relaxed">
             Get to know my journey, academic foundation, technical philosophy, and what drives my work in Applied AI.
           </p>
         </div>
@@ -220,7 +220,7 @@ export default function AboutSection({ onOpenResume, onOpenAssistant }: AboutSec
 
               <div className="p-5 sm:p-6 space-y-4">
                 <h4 className="text-base font-bold text-white">
-                  Ready to contribute to your team
+                  Ready to Contribute to Your Team
                 </h4>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Looking for high-impact AI/ML engineering positions, technical consultancy, and product engineering collaborations where practical machine learning drives tangible results.

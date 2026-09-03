@@ -16,10 +16,10 @@ export default function EducationExperience() {
             <span className="opacity-50">/</span>
             <span>Education & Background</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white">
-            Academic background & hands-on focus.
+          <h2 className="section-header-title text-2xl sm:text-4xl font-bold tracking-tight text-white">
+            Academic Background & Hands-on Focus.
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
+          <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
             Strong foundation in computer science combined with hands-on experience building real AI applications.
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function EducationExperience() {
                   <Award size={15} /> Opportunities & Roles
                 </div>
                 <h4 className="text-base font-bold text-white">
-                  Available for high-impact projects
+                  Available for High-Impact Projects
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
                   Looking for full-time engineering roles, consulting projects, or collaborations where practical AI and clean user experience matter.

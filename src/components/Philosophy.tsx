@@ -49,13 +49,13 @@ export default function Philosophy() {
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold theme-badge-primary mb-2.5">
             <span>04</span>
             <span className="opacity-50">/</span>
-            <span>How I Work</span>
+            <span>Values & Vision</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white">
-            Practical engineering principles.
+          <h2 className="section-header-title text-2xl sm:text-4xl font-bold tracking-tight text-white">
+            Purpose-Driven Engineering & Team Standards.
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
-            Building AI software that delivers real value in everyday settings, not just isolated lab demos.
+          <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
+            Creating sustainable, high-impact AI products through transparent communication, rigorous standards, and continuous iteration.
           </p>
         </div>
 
@@ -100,7 +100,7 @@ export default function Philosophy() {
                 <span>Collaborative Engineering & Agile Culture</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-white leading-snug">
-                Thriving in collaborative teams and fast-paced environments.
+                Thriving in Collaborative Teams & Fast-Paced Environments.
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed">
                 Great software is never built in a silo. I prioritize transparent communication, clean architectural diagrams, and continuous feedback loops with teammates and stakeholders to turn complex AI research into intuitive products.

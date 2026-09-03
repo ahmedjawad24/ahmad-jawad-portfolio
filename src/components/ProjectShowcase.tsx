@@ -76,10 +76,10 @@ export default function ProjectShowcase({
               <span className="opacity-50">/</span>
               <span>Selected Projects</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white">
-              Practical software & AI applications.
+            <h2 className="section-header-title text-2xl sm:text-4xl font-bold tracking-tight text-white">
+              Practical Software & AI Applications.
             </h2>
-            <p className="text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
+            <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
               Explore hands-on applications built for real-world scenarios—from healthcare screening and fraud protection to helpful AI assistants and data analytics.
             </p>
           </div>
