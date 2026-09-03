@@ -2,6 +2,7 @@
 
 import { ArrowUp, Github, Linkedin, Mail, Sparkles } from "lucide-react";
 import { PERSONAL_INFO } from "@/data/portfolioData";
+import TechLogoAJ from "./TechLogoAJ";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -13,9 +14,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Left info */}
         <div className="flex items-center gap-3">
-          <div className="w-6 h-6 rounded-lg theme-card-inner border flex items-center justify-center font-bold text-[10px] theme-text-accent">
-            AJ
-          </div>
+          <TechLogoAJ size="sm" withGlow={false} />
           <span className="text-slate-300">© 2026 Ahmad Jawad · Applied AI & Software Engineer</span>
         </div>
 

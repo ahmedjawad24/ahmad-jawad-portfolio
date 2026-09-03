@@ -46,15 +46,14 @@ export default function Philosophy() {
         
         {/* Section Header */}
         <div className="mb-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold theme-badge-primary mb-2.5">
-            <span>04</span>
-            <span className="opacity-50">/</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold theme-badge-primary mb-3">
+            <span className="w-2 h-2 rounded-full bg-current status-dot" />
             <span>Values & Vision</span>
           </div>
-          <h2 className="section-header-title text-2xl sm:text-4xl font-bold tracking-tight text-white">
+          <h2 className="section-header-title text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-snug">
             Purpose-Driven Engineering & Team Standards.
           </h2>
-          <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
+          <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-2 leading-relaxed">
             Creating sustainable, high-impact AI products through transparent communication, rigorous standards, and continuous iteration.
           </p>
         </div>

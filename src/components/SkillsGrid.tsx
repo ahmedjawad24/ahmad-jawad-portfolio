@@ -17,15 +17,14 @@ export default function SkillsGrid() {
         
         {/* Section Header */}
         <div className="mb-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold theme-badge-secondary mb-2.5">
-            <span>03</span>
-            <span className="opacity-50">/</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold theme-badge-secondary mb-3">
+            <span className="w-2 h-2 rounded-full bg-current status-dot" />
             <span>Skills & Tools</span>
           </div>
-          <h2 className="section-header-title text-2xl sm:text-4xl font-bold tracking-tight text-white">
+          <h2 className="section-header-title text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-snug">
             Core Skills & Modern Technologies.
           </h2>
-          <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-1.5 leading-relaxed">
+          <p className="section-header-desc text-slate-300 text-sm sm:text-base max-w-2xl mt-2 leading-relaxed">
             Technologies I use daily to build machine learning models, smart assistants, cloud backends, and responsive web applications.
           </p>
         </div>
@@ -36,7 +35,7 @@ export default function SkillsGrid() {
             return (
               <div
                 key={categoryGroup.category}
-                className="theme-surface p-6 sm:p-7 border space-y-5 rounded-2xl"
+                className="theme-surface p-6 sm:p-7 border space-y-5 rounded-2xl shadow-sm"
               >
                 {/* Category Header */}
                 <div className="flex items-center gap-3 border-b border-slate-700/50 pb-4">
@@ -56,27 +55,14 @@ export default function SkillsGrid() {
                 {/* Skill Pills Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {categoryGroup.items.map((skill) => {
-                    const isExpert = skill.level === "Expert";
-                    const isAdvanced = skill.level === "Advanced";
-
                     return (
                       <div
                         key={skill.name}
-                        className="flex items-center justify-between p-3 rounded-xl theme-card-inner border hover:border-slate-500 transition-colors"
+                        className="flex items-center gap-2.5 p-3 rounded-xl theme-card-inner border hover:border-slate-500 hover:scale-[1.01] transition-all group"
                       >
-                        <span className="text-xs font-medium text-slate-200">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)] opacity-70 group-hover:opacity-100 group-hover:scale-125 transition-all shrink-0" />
+                        <span className="text-xs sm:text-sm font-medium text-slate-200 group-hover:text-white transition-colors">
                           {skill.name}
-                        </span>
-                        <span
-                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
-                            isExpert
-                              ? "theme-badge-primary"
-                              : isAdvanced
-                              ? "theme-badge-secondary"
-                              : "theme-card-inner text-slate-300 border"
-                          }`}
-                        >
-                          {skill.level}
                         </span>
                       </div>
                     );

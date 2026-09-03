@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   Bot,
@@ -17,6 +17,7 @@ import {
 import confetti from "canvas-confetti";
 import { PERSONAL_INFO } from "@/data/portfolioData";
 import ThemeSelector from "./ThemeSelector";
+import TechLogoAJ from "./TechLogoAJ";
 
 interface NavbarProps {
   onOpenAssistant: () => void;
@@ -26,6 +27,34 @@ interface NavbarProps {
 export default function Navbar({ onOpenAssistant, onOpenResume }: NavbarProps) {
   const [copied, setCopied] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sectionIds = ["contact", "about", "philosophy", "skills", "projects"];
+      const scrollPosition = window.scrollY + 220;
+
+      for (const id of sectionIds) {
+        const element = document.getElementById(id);
+        if (element) {
+          const top = element.offsetTop;
+          const height = element.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(id);
+            return;
+          }
+        }
+      }
+
+      if (window.scrollY < 300) {
+        setActiveSection("");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(PERSONAL_INFO.email);
@@ -40,30 +69,24 @@ export default function Navbar({ onOpenAssistant, onOpenResume }: NavbarProps) {
   };
 
   const navLinks = [
-    { label: "Projects", href: "#projects" },
-    { label: "Skills", href: "#skills" },
-    { label: "Values & Vision", href: "#philosophy" },
-    { label: "About Me", href: "#about" },
-    { label: "Contact", href: "#contact" },
+    { label: "PROJECTS", href: "#projects", id: "projects" },
+    { label: "SKILLS", href: "#skills", id: "skills" },
+    { label: "VALUES & VISION", href: "#philosophy", id: "philosophy" },
+    { label: "ABOUT", href: "#about", id: "about" },
+    { label: "CONTACT", href: "#contact", id: "contact" },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full theme-surface-glass border-b transition-all">
+    <header className="sticky top-0 z-40 w-full theme-surface-glass border-b transition-all backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between">
         
         {/* Left: Brand Identity */}
         <a href="#top" className="flex items-center gap-3 group shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl theme-card-inner border flex items-center justify-center font-bold theme-text-accent group-hover:scale-105 transition-all shadow-sm">
-            AJ
-          </div>
+          <TechLogoAJ size="md" />
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-100 text-sm sm:text-base tracking-tight group-hover:theme-text-accent transition-colors">
                 {PERSONAL_INFO.name}
-              </span>
-              <span className="hidden xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold theme-badge-primary">
-                <span className="w-1.5 h-1.5 rounded-full bg-current status-dot" />
-                Available
               </span>
             </div>
             <p className="text-[11px] text-slate-400 hidden sm:block leading-none mt-0.5">
@@ -72,18 +95,27 @@ export default function Navbar({ onOpenAssistant, onOpenResume }: NavbarProps) {
           </div>
         </a>
 
-        {/* Center: Clean Navigation Links */}
-        <nav className="hidden md:flex items-center gap-5 lg:gap-7 text-xs sm:text-sm font-medium text-slate-300">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="hover:theme-text-accent hover:text-white transition-colors py-1.5 px-1 relative group"
-            >
-              <span>{link.label}</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[var(--accent-primary)] transition-all duration-200 group-hover:w-full rounded-full" />
-            </a>
-          ))}
+        {/* Center: Clean Navigation Links with Active State Highlighting */}
+        <nav className="hidden md:flex items-center gap-2 lg:gap-3 text-xs sm:text-sm font-medium text-slate-300">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.id;
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                className={`py-1.5 px-3 rounded-xl transition-all duration-200 relative group flex items-center gap-1.5 ${
+                  isActive
+                    ? "theme-card-inner theme-text-accent font-semibold shadow-sm border border-[var(--accent-primary)]/30"
+                    : "hover:theme-text-accent hover:text-white"
+                }`}
+              >
+                {isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)] animate-pulse" />
+                )}
+                <span>{link.label}</span>
+              </a>
+            );
+          })}
         </nav>
 
         {/* Right: Minimal, Balanced Toolbar */}
