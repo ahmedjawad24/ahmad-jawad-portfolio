@@ -1,85 +1,116 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { ArrowUpRight, BrainCircuit, Bot, Github, Linkedin, Radio, Send, ShieldCheck, Workflow, X } from "lucide-react";
-
-type Project = { title: string; type: string; description: string; tags: string[]; href: string; signal: string; featured?: boolean; private?: boolean };
-type Message = { from: "assistant" | "visitor"; text: string };
-
-const projects: Project[] = [
-  { title: "Proof of Trust", type: "GenAI / Web3", description: "An accountability layer for AI responses: human audits, model reputation, and immutable verification anchored to Solana.", tags: ["Next.js", "Solana", "Rust", "AI evaluation"], signal: "AI accountability", href: "https://github.com/ahmedjawad24/proof-of-trust", featured: true },
-  { title: "FraudLens", type: "MLOps / Risk", description: "An imbalance-aware fraud screening system with validation-selected thresholds, analyst review queues, and batch inference.", tags: ["Python", "Scikit-learn", "Streamlit", "Evaluation"], signal: "PR-AUC 0.874", href: "https://github.com/ahmedjawad24/credit-card-fraud-detection" },
-  { title: "Explainable Retinal AI", type: "Applied AI", description: "A two-stage clinical vision pipeline with Grad-CAM heatmaps, FastAPI inference, and role-based workflows for review.", tags: ["PyTorch", "EfficientNet", "FastAPI", "Grad-CAM"], signal: "Human-in-the-loop", href: "https://github.com/ahmedjawad24/Explainable-retinal-disease-detection" },
-  { title: "PEL Intelligence", type: "MLOps / Analytics", description: "A deployable power intelligence dashboard turning sensor signals into transparent predictions and operational history.", tags: ["Python", "Random Forest", "Dashboard", "Deployment"], signal: "Operational ML", href: "https://github.com/ahmedjawad24/PEL-Electronic-Intelligence" },
-  { title: "CareBridge", type: "Agentic AI", description: "A healthcare-oriented agentic AI experience designed around useful, human-centered assistance.", tags: ["TypeScript", "Next.js", "Agents"], signal: "Agentic workflows", href: "https://github.com/ahmedjawad24/agentic_ai_hackathon" },
-  { title: "LiteMod3D", type: "Applied AI", description: "A private 3D and computer vision project exploring lightweight modeling for practical inference constraints.", tags: ["Python", "3D vision", "Lightweight"], signal: "Private case study", href: "https://github.com/ahmedjawad24/LiteMod3D", private: true },
-  { title: "Lightweight Brain Tumor Segmentation", type: "Applied AI", description: "A private medical imaging project focused on efficient segmentation and deployable deep-learning workflows.", tags: ["Deep learning", "Segmentation", "Medical AI"], signal: "Private case study", href: "https://github.com/ahmedjawad24/Lightweight-Brain-Tumor-Segmentation", private: true },
-  { title: "Email Tone Analyzer", type: "GenAI / NLP", description: "A private language application for understanding email tone and turning communication signals into useful feedback.", tags: ["NLP", "Text analysis", "Product AI"], signal: "Private case study", href: "https://github.com/ahmedjawad24/email_tone_analyzer", private: true },
-  { title: "Soil Crop Predictor", type: "Applied ML", description: "An accessible decision-support tool that maps soil measurements to crop recommendations.", tags: ["Python", "Streamlit", "Agriculture"], signal: "Decision support", href: "https://github.com/ahmedjawad24/soil_crop_predictor" },
-];
-const filters = ["All", "GenAI / Web3", "GenAI / NLP", "Agentic AI", "MLOps / Risk", "Applied AI", "MLOps / Analytics", "Applied ML"];
-const fallback = "I do not have a reliable answer for that yet. Ahmad can answer directly at ahmadjawad24@users.noreply.github.com.";
+import { useState } from "react";
+import { Bot, Palette } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import ProjectShowcase from "@/components/ProjectShowcase";
+import ProjectModal from "@/components/ProjectModal";
+import SkillsGrid from "@/components/SkillsGrid";
+import Philosophy from "@/components/Philosophy";
+import AboutSection from "@/components/AboutSection";
+import ContactSection from "@/components/ContactSection";
+import ResumeModal from "@/components/ResumeModal";
+import ChatAssistant from "@/components/ChatAssistant";
+import Footer from "@/components/Footer";
+import { Project } from "@/data/portfolioData";
 
 export default function Home() {
-  const [filter, setFilter] = useState("All");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [chatOpen, setChatOpen] = useState(false);
-  const [question, setQuestion] = useState("");
-  const [messages, setMessages] = useState<Message[]>([{ from: "assistant", text: "Hi, I’m Ahmad’s portfolio assistant. Ask about his work, stack, background, or availability." }]);
-  const [isThinking, setIsThinking] = useState(false);
-  const quickPrompts = ["Which project should I explore first?", "What can Ahmad build for a team?", "Tell me about Proof of Trust"];
-  const visible = filter === "All" ? projects : projects.filter((project) => project.type === filter);
-  const ask = async (event: FormEvent | null, prompt = question) => {
-    event?.preventDefault();
-    if (!prompt.trim() || isThinking) return;
-    const text = prompt.trim();
-    const nextMessages = [...messages, { from: "visitor" as const, text }];
-    setMessages([...nextMessages, { from: "assistant", text: "" }]);
-    setQuestion("");
-    setIsThinking(true);
-    try {
-      const response = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages }) });
-      if (!response.ok || !response.body) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.reply || fallback);
-      }
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let answer = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const events = buffer.split("\n\n");
-        buffer = events.pop() || "";
-        for (const eventChunk of events) {
-          const dataLine = eventChunk.split("\n").find((line) => line.startsWith("data: "));
-          if (!dataLine) continue;
-          const payload = dataLine.slice(6).trim();
-          if (payload === "[DONE]") continue;
-          const token = JSON.parse(payload).choices?.[0]?.delta?.content || "";
-          answer += token;
-          setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: answer }]);
-        }
-      }
-      if (!answer) setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: fallback }]);
-    } catch (error) {
-      const errorMessage = error instanceof Error && error.message ? error.message : fallback;
-      setMessages((current) => [...current.slice(0, -1), { from: "assistant", text: errorMessage }]);
-    } finally { setIsThinking(false); }
+  const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantPrompt, setAssistantPrompt] = useState<string>("");
+  const [resumeOpen, setResumeOpen] = useState(false);
+
+  const handleAskAboutProject = (project: Project) => {
+    setSelectedProject(null);
+    setAssistantPrompt(`Tell me about Ahmad's ${project.title} project and its architecture.`);
+    setAssistantOpen(true);
   };
-  return <main>
-    <div className="ambient-bg" aria-hidden="true"><span className="ambient-blob blob-one" /><span className="ambient-blob blob-two" /><span className="ambient-blob blob-three" /><span className="ambient-grid" /></div>
-    <div className="shell">
-      <nav className="nav"><a className="logo" href="#top"><span className="logo-mark">AJ</span> Ahmad Jawad</a><div className="nav-links"><a href="#about">About</a><a href="#work">Projects</a><a href="#approach">How I work</a><a href="#contact">Contact</a></div><a className="button" href="https://github.com/ahmedjawad24" target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={15} /></a></nav>
-      <section className="hero" id="top"><div className="hero-gallery" aria-hidden="true"><span className="hero-image image-one" /><div className="hero-shade" /></div><div className="hero-copy-block"><div className="kicker">Applied AI & MLOps Engineer · Open to opportunities</div><h1>AI products that teams can <em>understand, trust, and use.</em></h1><p className="hero-copy">I build production-focused systems where model outputs are not just accurate, but legible to people making real decisions.</p><div className="actions"><a className="button primary" href="#work">View my projects <ArrowUpRight size={16} /></a><button className="button" onClick={() => setChatOpen(true)}>Ask my assistant <Bot size={16} /></button></div><div className="hero-ribbon" aria-hidden="true"><span>GENAI</span><span>AGENTS</span><span>MLOPS</span><span>EXPLAINABILITY</span></div><div className="hero-stats"><span><strong>09</strong> projects</span><span><strong>03</strong> private case studies</span><span><strong>01</strong> clear focus</span></div></div><div className="signal"><div className="signal-grid" /><div className="signal-orbit orbit-one" /><div className="signal-orbit orbit-two" /><div className="signal-scan" /><div className="signal-content"><div className="eyebrow">How I build / 2026</div><h2>Useful AI, from first idea to final decision.</h2><div className="signal-list"><span>Clear model behavior</span><span>Human review checkpoints</span><span>Ready for real workflows</span></div><div className="signal-foot"><span><span className="pulse">●</span> Available for meaningful problems</span><span>Open globally</span></div></div></div></section>
-      <section className="section section-about" id="about"><div className="section-head"><div><div className="kicker">01 / About me</div><h2>Engineer first.<br />AI by purpose.</h2></div><p className="section-intro">I focus on making advanced models understandable, auditable, and useful in production contexts where trust matters.</p></div><div className="about"><p className="about-copy">Curious about the edge where <strong>AI research</strong> becomes a product people can rely on.</p><div className="about-details"><p>I&apos;m Ahmad Jawad, an engineer working across generative AI, machine learning, and production-minded software. My projects range from AI accountability on Solana to clinical explainability and fraud operations.</p><div className="education"><span className="eyebrow">Education</span><strong>BS Computer Science</strong><span>Pak Austria Fachhochschule: Institute of Applied Sciences & Technology</span></div><p>I&apos;m especially interested in teams solving difficult problems with high standards for experimentation, reliability, and responsible deployment.</p><div className="actions"><a className="button" href="https://github.com/ahmedjawad24" target="_blank" rel="noreferrer"><Github size={15} /> GitHub profile</a><a className="button" href="https://www.linkedin.com/in/ahmad-jawad-248870267" target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a></div></div></div></section>
-      <section className="section section-work" id="work"><div className="section-head"><div><div className="kicker">02 / Projects</div><h2>Selected work<br />and experiments.</h2></div><p className="section-intro">Explore the systems I have built across generative AI, machine learning, healthcare, and operations.</p></div><div className="project-filter"><label htmlFor="project-type">Filter projects</label><select id="project-type" value={filter} onChange={(event) => setFilter(event.target.value)}>{filters.map((item) => <option key={item}>{item}</option>)}</select></div><div className="project-scroll"><div className="project-grid">{visible.map((project, index) => <button className={`project ${project.featured ? "featured" : ""}`} onClick={() => setSelectedProject(project)} key={project.title}><div className="project-top"><span className="project-index">0{index + 1} / {project.type}</span>{project.private ? <span className="private-label">Private</span> : <ArrowUpRight className="project-link" size={20} />}</div><div className="project-visual"><span>{project.signal}</span><span className="visual-line" /></div><div><h3>{project.title}</h3><p>{project.description}</p></div><div className="project-tags">{project.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div><span className="project-cta">View project</span></button>)}</div></div></section>
-      <section className="section section-approach" id="approach"><div className="section-head"><div><div className="kicker">04 / How I work</div><h2>Useful beats<br />impressive.</h2></div><p className="section-intro">The strongest AI products respect both the machine and the person relying on it.</p></div><div className="capabilities"><div className="capability"><BrainCircuit size={22} /><h3>Build the intelligence</h3><p>Model selection, prompting, agent design, retrieval, and evaluation shaped around the real problem.</p></div><div className="capability"><Workflow size={22} /><h3>Operationalize the system</h3><p>Reproducible pipelines, versioned artifacts, APIs, dashboards, and deployment paths that survive contact with reality.</p></div><div className="capability"><ShieldCheck size={22} /><h3>Earn confidence</h3><p>Transparent metrics, explainability, human review, and explicit limits built into the experience.</p></div></div></section>
-    </div><section className="contact" id="contact"><div className="shell"><div className="kicker">05 / Start a conversation</div><h2>Have a hard problem?<br />Let&apos;s make it legible.</h2><div className="contact-grid"><a className="contact-item" href="mailto:ahmed.jawadcs@gmail.com"><span>Email</span><strong>ahmed.jawadcs@gmail.com</strong><ArrowUpRight size={17} /></a><a className="contact-item" href="tel:+923482991158"><span>Phone</span><strong>+92 348 2991158</strong><ArrowUpRight size={17} /></a><a className="contact-item" href="https://github.com/ahmedjawad24" target="_blank" rel="noreferrer"><span>Code</span><strong>github.com/ahmedjawad24</strong><ArrowUpRight size={17} /></a><a className="contact-item" href="https://www.linkedin.com/in/ahmad-jawad-248870267" target="_blank" rel="noreferrer"><span>Network</span><strong>LinkedIn profile</strong><ArrowUpRight size={17} /></a></div></div></section><div className="shell"><footer className="footer"><span>© 2026 Ahmad Jawad</span><span><Radio size={12} /> Built for the web · Deployed on Vercel</span></footer></div>
-    <button className="chat-launcher" onClick={() => setChatOpen((open) => !open)} aria-label={chatOpen ? "Close portfolio assistant" : "Open portfolio assistant"}>{chatOpen ? <X size={21} /> : <Bot size={21} />}<span>Ask about Ahmad</span></button>
-    {selectedProject && <div className="modal-backdrop" onClick={() => setSelectedProject(null)}><article className="project-modal" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setSelectedProject(null)} aria-label="Close project brief"><X size={18} /></button><span className="kicker">Project signal / {selectedProject.type}</span><h2>{selectedProject.title}</h2><p>{selectedProject.description}</p><div className="modal-signal"><span>Focus</span><strong>{selectedProject.signal}</strong></div><div className="project-tags">{selectedProject.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div><div className="modal-actions"><a className="button primary" href={selectedProject.href} target="_blank" rel="noreferrer">View repository <ArrowUpRight size={15} /></a><button className="button" onClick={() => { setSelectedProject(null); setChatOpen(true); }}>Ask about this <Bot size={15} /></button></div></article></div>}
-    {chatOpen && <aside className="chat-panel" aria-label="Portfolio assistant"><div className="chat-header"><div><strong>AJ assistant</strong><span><span className="pulse">●</span> Live portfolio guide · streams in real time</span></div><button onClick={() => setChatOpen(false)} aria-label="Close assistant"><X size={17} /></button></div><div className="chat-messages">{messages.map((message, index) => <div className={`chat-message ${message.from}`} key={`${message.from}-${index}`}>{message.text}</div>)}{messages.length === 1 && <div className="quick-prompts">{quickPrompts.map((prompt) => <button key={prompt} onClick={() => ask(null, prompt)} disabled={isThinking}>{prompt}<ArrowUpRight size={13} /></button>)}</div>}{isThinking && <div className="chat-message assistant typing">Thinking<span>.</span><span>.</span><span>.</span></div>}</div><form className="chat-form" onSubmit={ask}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ask about projects, skills, or fit..." aria-label="Ask the assistant" /><button type="submit" aria-label="Send question" disabled={isThinking}><Send size={17} /></button></form><a className="chat-handoff" href="mailto:ahmed.jawadcs@gmail.com">Need a direct answer? Email Ahmad <ArrowUpRight size={13} /></a></aside>}
-  </main>;
+
+  const handleOpenAssistant = (initialPrompt?: string) => {
+    if (initialPrompt) {
+      setAssistantPrompt(initialPrompt);
+    }
+    setAssistantOpen(true);
+  };
+
+  return (
+    <div className="min-h-screen text-slate-100 flex flex-col relative font-sans">
+      {/* Background ambient subtle atmosphere with responsive glow */}
+      <div className="fixed inset-0 pointer-events-none -z-10 bg-ambient bg-grid-subtle opacity-60" />
+
+      {/* Top Navigation */}
+      <Navbar
+        onOpenAssistant={() => handleOpenAssistant()}
+        onOpenResume={() => setResumeOpen(true)}
+      />
+
+      {/* Main Content Sections */}
+      <main className="flex-1">
+        {/* 01 / Hero Section */}
+        <Hero
+          onOpenAssistant={() => handleOpenAssistant()}
+          onOpenResume={() => setResumeOpen(true)}
+        />
+
+        {/* 02 / Projects & Systems Showcase */}
+        <ProjectShowcase
+          onSelectProject={(project) => setSelectedProject(project)}
+          onAskAboutProject={handleAskAboutProject}
+        />
+
+        {/* 03 / Technical Competencies */}
+        <SkillsGrid />
+
+        {/* 04 / Engineering Principles */}
+        <Philosophy />
+
+        {/* 05 / About Me & Background */}
+        <AboutSection
+          onOpenResume={() => setResumeOpen(true)}
+          onOpenAssistant={() => handleOpenAssistant()}
+        />
+
+        {/* 06 / Direct Contact */}
+        <ContactSection />
+      </main>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Floating AI Guide Button */}
+      {!assistantOpen && (
+        <button
+          onClick={() => handleOpenAssistant()}
+          className="fixed right-4 bottom-4 sm:right-6 sm:bottom-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold theme-btn-primary shadow-2xl transition-all active:scale-95 group border border-white/20"
+          aria-label="Open AI Portfolio Assistant"
+        >
+          <Bot size={16} />
+          <span>Ask AI Assistant</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-950 status-dot" />
+        </button>
+      )}
+
+      {/* Modals */}
+      <ProjectModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+        onAskAboutProject={handleAskAboutProject}
+      />
+
+      <ResumeModal
+        isOpen={resumeOpen}
+        onClose={() => setResumeOpen(false)}
+      />
+
+      <ChatAssistant
+        isOpen={assistantOpen}
+        onClose={() => {
+          setAssistantOpen(false);
+          setAssistantPrompt("");
+        }}
+        initialPrompt={assistantPrompt}
+      />
+    </div>
+  );
 }

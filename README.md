@@ -1,62 +1,82 @@
-# Ahmad Jawad | Applied AI & MLOps Engineer
+# Ahmad Jawad — Applied AI & Machine Learning Engineer
 
-Personal portfolio for Ahmad Jawad, focused on trustworthy AI systems, agentic products, and production-minded machine learning.
+> A clean, responsive portfolio showcasing real-world machine learning systems, computer vision applications, helpful AI assistants, and reliable web applications.
 
-## Run locally
+---
+
+## ⚡ Live Preview & Tech Stack
+
+- **Framework**: Next.js 15 (App Router, Standalone Output)
+- **UI & Styling**: React 19, Tailwind CSS v4, Lucide Icons, Canvas Confetti
+- **AI Integration**: Google Gemini / Built-in Local Fallback Assistant with SSE Streaming
+- **Language**: TypeScript 5
+
+---
+
+## 🚀 Quickstart (Local Development)
 
 ```bash
+# 1. Clone repository
+git clone https://github.com/ahmedjawad24/ahmad-jawad-portfolio.git
+cd ahmad-jawad-portfolio
+
+# 2. Install dependencies
 npm install
+
+# 3. (Optional) Configure environment variables
+cp .env.example .env.local
+# Add your GEMINI_API_KEY (optional, helpful built-in fallback is included)
+
+# 4. Start development server
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+---
 
-Import this repository into Vercel. The default Next.js settings are sufficient:
+## 🚢 Deployment Guide
 
-- Framework preset: Next.js
-- Build command: `next build`
-- Output directory: default
-- Node.js: 20 or newer
+### Option A: Vercel (Recommended)
 
-### Optional AI concierge
+1. Push your code to GitHub.
+2. Sign in to [Vercel](https://vercel.com) and click **"Add New Project"**.
+3. Import your repository.
+4. (Optional) Add `GEMINI_API_KEY` under **Environment Variables**.
+5. Click **Deploy**.
 
-The assistant works with a safe offline handoff by default. To enable intelligent
-GPT-style replies, add `OPENAI_API_KEY` and optionally `OPENAI_MODEL` in the
-Vercel project environment variables. Never commit the real key; use `.env.example`
-as the template.
+### Option B: Docker / Cloud Run
 
-For local development, create `.env.local` in the project root and add:
+The repository includes `output: 'standalone'` in `next.config.ts`, making it ready for minimal multi-stage Docker builds.
 
-```env
-OPENAI_API_KEY=your-new-key
-OPENAI_MODEL=gpt-4o-mini
+```dockerfile
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=3000
+COPY .next/standalone ./
+COPY .next/static ./.next/static
+COPY public ./public
+EXPOSE 3000
+CMD ["node", "server.js"]
 ```
 
-Restart the dev server after changing environment variables. If PowerShell blocks
-`npm`, use `npm.cmd` or start Next.js directly with the Node.js executable.
+---
 
-### Deploy to Vercel
+## 📂 Featured Applications
 
-1. Revoke any API key shared in chat, email, or source control, then create a new key.
-2. Sign in to Vercel with GitHub and choose **Add New > Project**.
-3. Import `ahmad-jawad-portfolio` from GitHub and keep the detected Next.js settings.
-4. Add `OPENAI_API_KEY` and `OPENAI_MODEL` under Environment Variables for Production, Preview, and Development.
-5. Click **Deploy**. Future pushes to `master` deploy automatically.
+1. **[Proof of Trust](https://github.com/ahmedjawad24/proof-of-trust)**: An AI accountability system that double-checks AI answers across multiple models and records tamper-proof verification.
+2. **[Eye Disease Detection AI](https://github.com/ahmedjawad24/Explainable-retinal-disease-detection)**: A clinical computer vision tool that detects eye diseases from retinal photos and highlights the exact problem areas for doctors (96.2% accuracy).
+3. **[FraudLens](https://github.com/ahmedjawad24/credit-card-fraud-detection)**: A smart fraud prevention platform tuned for rare fraud cases, reducing false alarms by 34% for real customers.
+4. **[CareBridge](https://github.com/ahmedjawad24/agentic_ai_hackathon)**: A friendly patient check-in assistant that collects medical symptoms and creates neat summaries for doctors.
+5. **[PEL Equipment Intelligence](https://github.com/ahmedjawad24/PEL-Electronic-Intelligence)**: Predictive maintenance dashboard that forecasts machine breakdowns up to 48 hours early.
+6. **[Soil & Crop Advisory App](https://github.com/ahmedjawad24/soil_crop_predictor)**: A simple tool that recommends the best crops to plant based on soil nutrients and local weather.
 
-Never put the key in `page.tsx`, `NEXT_PUBLIC_*`, or any committed file.
+---
 
-## Featured work
+## 📬 Contact & Connect
 
-- [Proof of Trust](https://github.com/ahmedjawad24/proof-of-trust)
-- [Credit Card Fraud Detection](https://github.com/ahmedjawad24/credit-card-fraud-detection)
-- [Explainable Retinal Disease Detection](https://github.com/ahmedjawad24/Explainable-retinal-disease-detection)
-- [PEL Electronic Intelligence](https://github.com/ahmedjawad24/PEL-Electronic-Intelligence)
-- [Agentic AI Hackathon](https://github.com/ahmedjawad24/agentic_ai_hackathon)
-
-## Positioning
-
-**Applied AI & MLOps Engineer** building AI that can be evaluated, deployed, operated, and trusted.
-
-Contact: `ahmed.jawadcs@gmail.com` · `+92 348 2991158`
+- **Email**: [ahmed.jawadcs@gmail.com](mailto:ahmed.jawadcs@gmail.com)
+- **Phone / WhatsApp**: [+92 348 2991158](tel:+923482991158)
+- **GitHub**: [github.com/ahmedjawad24](https://github.com/ahmedjawad24)
+- **LinkedIn**: [linkedin.com/in/ahmad-jawad-248870267](https://www.linkedin.com/in/ahmad-jawad-248870267)
