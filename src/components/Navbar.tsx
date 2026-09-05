@@ -31,7 +31,7 @@ export default function Navbar({ onOpenAssistant, onOpenResume }: NavbarProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sectionIds = ["contact", "about", "philosophy", "skills", "projects"];
+      const sectionIds = ["contact", "tech-stack", "testimonials", "projects", "services"];
       const scrollPosition = window.scrollY + 220;
 
       for (const id of sectionIds) {
@@ -47,7 +47,7 @@ export default function Navbar({ onOpenAssistant, onOpenResume }: NavbarProps) {
       }
 
       if (window.scrollY < 300) {
-        setActiveSection("");
+        setActiveSection("top");
       }
     };
 
@@ -69,10 +69,10 @@ export default function Navbar({ onOpenAssistant, onOpenResume }: NavbarProps) {
   };
 
   const navLinks = [
+    { label: "ABOUT", href: "#top", id: "top" },
+    { label: "SERVICES", href: "#services", id: "services" },
     { label: "PROJECTS", href: "#projects", id: "projects" },
-    { label: "SKILLS", href: "#skills", id: "skills" },
-    { label: "VALUES & VISION", href: "#philosophy", id: "philosophy" },
-    { label: "ABOUT", href: "#about", id: "about" },
+    { label: "TESTIMONIALS", href: "#testimonials", id: "testimonials" },
     { label: "CONTACT", href: "#contact", id: "contact" },
   ];
 

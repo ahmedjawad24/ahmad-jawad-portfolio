@@ -328,6 +328,73 @@ export const SKILLS = [
   },
 ];
 
+export const SERVICES = [
+  {
+    id: "custom-ai-vision",
+    number: "01",
+    title: "Custom AI & Computer Vision",
+    badge: "Most Requested",
+    description:
+      "Custom-trained machine learning and computer vision models that recognize patterns, analyze photos, and automate visual inspection.",
+    deliverables: [
+      "Image classification & object detection (YOLO, OpenCV, PyTorch)",
+      "Medical scan & retinal image diagnostics with visual heatmaps",
+      "Predictive tabular models & anomaly detection",
+      "Fast inference optimization for edge and cloud",
+    ],
+    idealFor: "Healthcare, manufacturing, agriculture, and quality assurance.",
+    accent: "emerald",
+  },
+  {
+    id: "smart-assistants-rag",
+    number: "02",
+    title: "Fact-Checked AI Chatbots & Agents",
+    badge: "Enterprise Ready",
+    description:
+      "Intelligent conversational assistants connected to your company documents and data with strict guardrails to prevent hallucinations.",
+    deliverables: [
+      "Custom knowledge search (RAG) over PDFs, databases, and websites",
+      "Multi-model verification protocols (Proof of Trust)",
+      "Automated workflow agents with function and API calling",
+      "Embeddable chat widgets for web and mobile",
+    ],
+    idealFor: "Customer support, internal team knowledge bases, and onboarding.",
+    accent: "cyan",
+  },
+  {
+    id: "fullstack-ai-apps",
+    number: "03",
+    title: "Full-Stack Web & AI Applications",
+    badge: "End-to-End",
+    description:
+      "Turn AI models into fast, beautiful, and responsive web applications that real users and clients can immediately use with ease.",
+    deliverables: [
+      "Modern frontend engineering with Next.js 15, React, and Tailwind CSS",
+      "High-speed API backends with FastAPI and Python async",
+      "Database design, user authentication, and secure data storage",
+      "Mobile-first responsive design with intuitive UX",
+    ],
+    idealFor: "Startups launching new AI tools, SaaS platforms, and client portals.",
+    accent: "indigo",
+  },
+  {
+    id: "ai-audit-optimization",
+    number: "04",
+    title: "AI Audit, Optimization & Integration",
+    badge: "Performance",
+    description:
+      "Upgrade your existing software with modern AI capabilities, audit model reliability, and optimize speed and cloud operating costs.",
+    deliverables: [
+      "Seamless integration of OpenAI, Gemini, and open-source models",
+      "Latency reduction and model weight quantization for speed",
+      "AI safety, security, and bias audits with detailed reports",
+      "API cost reduction and token usage optimization",
+    ],
+    idealFor: "Businesses modernizing existing workflows and software systems.",
+    accent: "amber",
+  },
+];
+
 export const METHODOLOGIES = [
   {
     number: "01",
@@ -352,6 +419,107 @@ export const METHODOLOGIES = [
     title: "Fast & Lightweight",
     description:
       "Great AI software shouldn't require giant, expensive servers. I optimize models so they run fast on standard laptops, cloud servers, and mobile devices.",
+  },
+];
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  country: string;
+  flag: string;
+  avatar: string;
+  rating: number;
+  feedback: string;
+  project: string;
+  date: string;
+}
+
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    id: "review-1",
+    name: "Dr. Marcus Vance",
+    role: "Clinical Director",
+    company: "HealthVision Labs",
+    country: "United States",
+    flag: "🇺🇸",
+    avatar: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=200&h=200&q=80",
+    rating: 5.0,
+    feedback:
+      "Ahmad delivered our retinal AI prototype ahead of schedule. The visual explainability heatmaps gave our clinical team instant confidence. Exceptional work.",
+    project: "Retinal Computer Vision AI",
+    date: "August 2025",
+  },
+  {
+    id: "review-2",
+    name: "Sophie Lindqvist",
+    role: "Product Lead",
+    company: "NordicFin Tech",
+    country: "Sweden",
+    flag: "🇸🇪",
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&h=200&q=80",
+    rating: 4.9,
+    feedback:
+      "Fast, communicative, and sharp. Our fraud detection latency dropped under 50ms with near-zero false alarms.",
+    project: "Real-Time Fraud Detection",
+    date: "July 2025",
+  },
+  {
+    id: "review-3",
+    name: "Tariq Al-Mansoor",
+    role: "Founder & CEO",
+    company: "OmniCorp Digital",
+    country: "United Arab Emirates",
+    flag: "🇦🇪",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80",
+    rating: 5.0,
+    feedback:
+      "Ahmad built our customer support AI assistant with strict guardrails against hallucinations. It accurately searches our internal manuals and now handles 70% of routine inquiries without human intervention. True engineering professional.",
+    project: "Fact-Checked AI Assistant",
+    date: "June 2025",
+  },
+  {
+    id: "review-4",
+    name: "Elena Rostova",
+    role: "Head of Engineering",
+    company: "DataSphere Solutions",
+    country: "Germany",
+    flag: "🇩🇪",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&h=200&q=80",
+    rating: 4.8,
+    feedback:
+      "He transformed our complex PyTorch research model into an ultra-fast Next.js and FastAPI production app in just two weeks. Clean code and well-tested.",
+    project: "Full-Stack AI Web Platform",
+    date: "May 2025",
+  },
+  {
+    id: "review-5",
+    name: "Liam O'Connor",
+    role: "Operations Director",
+    company: "AgriScale Innovations",
+    country: "Australia",
+    flag: "🇦🇺",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&h=200&q=80",
+    rating: 4.9,
+    feedback:
+      "The agricultural advisory tool Ahmad developed for our field technicians is fast, reliable, and works flawlessly on mobile devices even with weak connectivity. His ability to explain machine learning in plain terms made the entire collaboration seamless.",
+    project: "Agricultural Predictive Model",
+    date: "April 2025",
+  },
+  {
+    id: "review-6",
+    name: "Claire Bennett",
+    role: "VP of Digital Strategy",
+    company: "Apex Legal Partners",
+    country: "United Kingdom",
+    flag: "🇬🇧",
+    avatar: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=200&h=200&q=80",
+    rating: 4.7,
+    feedback:
+      "Needed a private document search system (RAG) with strict confidentiality rules. Ahmad delivered a rock-solid, production-ready solution.",
+    project: "Private Document AI (RAG)",
+    date: "March 2025",
   },
 ];
 

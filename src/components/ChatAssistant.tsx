@@ -30,10 +30,10 @@ const DEFAULT_WELCOME =
   "Hi! I’m Ahmad’s portfolio guide. Ask me anything about his projects, skills, background, or availability for work.";
 
 const QUICK_PROMPTS = [
-  "Which project should I explore first?",
-  "What technologies does Ahmad work with?",
+  "What services does Ahmad offer?",
+  "Tell me about Ahmad's background & education",
   "How does the Eye Disease AI work?",
-  "How can I contact Ahmad?",
+  "How can I hire or contact Ahmad?",
 ];
 
 export default function ChatAssistant({
@@ -197,7 +197,7 @@ export default function ChatAssistant({
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:theme-card-inner transition-colors"
               title="Close assistant"
             >
               <X size={18} />
@@ -223,7 +223,7 @@ export default function ChatAssistant({
                   className={`max-w-[85%] text-xs sm:text-sm p-3.5 rounded-2xl leading-relaxed ${
                     isAssistant
                       ? "theme-card-inner border text-slate-200 rounded-tl-sm"
-                      : "theme-btn-primary font-semibold rounded-tr-sm shadow-md"
+                      : "theme-btn-primary font-semibold rounded-tr-sm shadow-md text-white"
                   }`}
                 >
                   {m.text || (isThinking && idx === messages.length - 1 ? (
@@ -240,7 +240,7 @@ export default function ChatAssistant({
         </div>
 
         {/* Suggested Quick Prompts */}
-        <div className="px-4 py-2 border-t border-slate-700/50 bg-slate-950/40 overflow-x-auto no-scrollbar flex gap-1.5">
+        <div className="px-4 py-2 border-t border-slate-700/50 theme-surface-glass overflow-x-auto no-scrollbar flex gap-1.5">
           {QUICK_PROMPTS.map((p) => (
             <button
               key={p}
